@@ -1,319 +1,516 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>Kim Bo-hyeon — Senior / Tech PM Portfolio</title>
+<title>Senior Tech PM Portfolio</title>
 <style>
+  /* [전체 슬라이드 공통 뼈대 스타일] */
   :root {
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --font-kr: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   }
-  
   html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #0E1628;
+    margin: 0; padding: 0;
+    background: #090F1C;
     color: #F2F5FA;
-    font-family: var(--font-sans);
-    scroll-behavior: smooth; /* 스크롤할 때 부드럽게 이동 */
+    font-family: var(--font-kr);
+    -webkit-user-select: none;
   }
-
-  /* 스크롤바 디자인 숨기기 (선택사항, 깔끔함을 위해) */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(93, 160, 255, 0.3);
-    border-radius: 3px;
-  }
-
-  /* 피피티 슬라이드 한 장을 담당하는 구역 */
-  .slide-section {
-    position: relative;
+  /* 슬라이드 쇼 형태의 세로 나열을 위해 오버플로우 허용 및 스냅 설정 */
+  .portfolio-wrapper {
     width: 100%;
-    min-height: 100vh; /* 브라우저 화면 높이에 딱 맞춤 */
-    box-sizing: border-box;
-    padding: 60px 8%; /* 좌우 여백을 %로 주어 화면에 맞게 늘어나고 줄어듦 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* 내용물이 화면 세로 중앙에 오도록 */
-    overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* 슬라이드 구분선 */
+    background: #090F1C;
   }
-
-  /* 텍스트 및 기본 스타일 고정 */
+  /* 개별 슬라이드 기본 규격 (1920x1080 FHD 고정 비율 기준) */
+  .slide-container {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    background: #090F1C;
+    overflow: hidden;
+    box-sizing: border-box;
+    margin: 0 auto;
+    border-bottom: 2px solid #1F2C46; /* 슬라이드 구분선 */
+  }
+  /* 공통 컴포넌트 클래스 내장 */
   .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #5DA0FF;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-sans); font-weight: 700; font-size: 14px;
+    letter-spacing: .2em; color: #5DA0FF;
   }
   .eyebrow .rule {
-    display: inline-block;
-    width: 20px;
-    height: 2px;
-    background-color: #5DA0FF;
+    display: inline-block; width: 24px; height: 2px; background: #5DA0FF;
   }
-  .h-hero {
-    font-size: clamp(48px, 6vw, 110px); /* 화면 크기에 따라 글자 크기가 부드럽게 조절됨 */
-    line-height: 1.1;
-    font-weight: 900;
-    margin: 0;
+  .project-badge {
+    display: flex; align-items: center; gap: 12px;
   }
-  .h-title {
-    font-family: var(--font-kr);
-    font-weight: 700;
+  .project-badge .chip {
+    background: #3B82F6; color: #FFF; font-family: var(--font-sans);
+    font-weight: 800; font-size: 12px; padding: 4px 8px; border-radius: 4px; letter-spacing: .05em;
   }
-  .body-kr {
-    font-family: var(--font-kr);
-    color: #A8B4CC;
+  .project-badge .cat {
+    color: #5DA0FF; font-family: var(--font-sans); font-weight: 700; font-size: 14px; letter-spacing: .1em;
   }
-
-  /* 1번 슬라이드용 하단 4개 카드 그리드 */
-  .pillar-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 50px;
-    width: 100%;
-    max-width: 1400px;
-  }
-
-  /* 2번 슬라이드용 가로 타임라인 카드 그리드 */
-  .timeline-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-    width: 100%;
-    max-width: 1500px;
-    z-index: 5;
-  }
-
-  /* 공통 카드 디자인 (젠스파크 스타일) */
+  .h-hero { font-weight: 900; color: #F2F5FA; font-family: var(--font-kr); }
+  .h-title { font-weight: 700; color: #F2F5FA; font-family: var(--font-kr); }
+  .body-kr { font-weight: 400; color: #C9D2E3; font-family: var(--font-kr); }
   .card {
-    background: rgba(30, 41, 59, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(31, 44, 70, 0.4);
+    border: 1px solid #1F2C46;
     border-radius: 16px;
-    backdrop-filter: blur(10px);
-    padding: 30px;
-    box-sizing: border-box;
-    position: relative;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(8px);
   }
-  .card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(93, 160, 255, 0.3);
+  .metric {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid #1E293B;
+    border-radius: 12px;
+    padding: 20px;
   }
-
-  /* 타임라인 가로선 레이아웃 */
-  .timeline-bar-container {
-    width: 100%;
-    max-width: 1400px;
-    margin: 40px 0 20px 0;
-    position: relative;
-  }
-  .timeline-line {
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #3B82F6 0%, #8B7BFF 50%, #2DD4BF 100%);
-    border-radius: 2px;
-  }
-
-  .check {
-    color: #5DA0FF;
-    font-weight: bold;
-    flex-shrink: 0;
-  }
-  .bullet-point {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
+  .metric-label { color: #8A96AE; font-size: 15px; font-weight: 600; }
+  .metric-value { font-family: var(--font-sans); font-size: 40px; font-weight: 800; color: #5DA0FF; margin-top: 4px; }
+  .check { color: #5DA0FF; font-weight: bold; }
 </style>
 </head>
 <body>
 
-  <!-- ==================== SLIDE 01: COVER ==================== -->
-  <section class="slide-section">
-    <!-- 배경 데코 (오른쪽 위 빛나는 구체) -->
-    <div style="position:absolute; right:-10%; top:-20%; width:60vw; height:60vw; max-width:1000px; border-radius:50%; background:radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0) 70%); filter:blur(20px); z-index:1; pointer-events:none;"></div>
+<div class="portfolio-wrapper">
 
-    <div style="z-index: 10; max-width: 1200px;">
-      <div class="eyebrow"><span class="rule"></span><span>PROFESSIONAL PORTFOLIO</span></div>
-      
-      <h1 class="h-hero">Senior</h1>
-      <h1 class="h-hero" style="color:#5DA0FF; margin-top:5px;">Tech PM</h1>
-
-      <div style="display:flex; align-items:center; gap:20px; margin-top:40px; flex-wrap: wrap;">
-        <span class="h-title" style="font-size: clamp(32px, 4vw, 54px);">김보현</span>
-        <span style="width:1px; height:30px; background:#3A4A6B; display:inline-block;"></span>
-        <span class="body-kr" style="font-size: clamp(18px, 2vw, 24px); color:#C9D2E3; font-weight:500;">6년 차 Product Manager</span>
-      </div>
-
-      <div class="body-kr" style="font-size: clamp(18px, 1.8vw, 22px); font-weight:600; color:#C9D2E3; margin-top:25px;">
-        <span style="color:#F2F5FA; font-weight:700;">Embedded HW</span> · 
-        <span style="color:#F2F5FA; font-weight:700;">Global Payments</span> · 
-        <span style="color:#F2F5FA; font-weight:700;">Data-Driven Growth</span>
-      </div>
-
-      <p class="body-kr" style="font-size: clamp(16px, 1.5vw, 19px); line-height: 1.7; color:#A8B4CC; margin-top:20px; max-width:800px;">
-        하드웨어 임베디드 통신부터 글로벌 결제 인프라까지, 복잡한 테크 아키텍처를<br>
-        비즈니스 성과로 연결해 온 <span style="color:#F2F5FA;font-weight:600;">6년 차 Product Manager 김보현</span>입니다.
+  <div class="slide-container" data-screen-label="01 Cover">
+    <div style="position:absolute; left:1080px; top:-260px; width:1100px; height:1100px; z-index:1;">
+      <div style="width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 32% 34%, rgba(59,130,246,0.28), rgba(59,130,246,0) 55%); filter:blur(1px);"></div>
+    </div>
+    <div style="position:absolute; left:1200px; top:520px; width:12px; height:12px; z-index:2;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#5DA0FF;box-shadow:0 0 24px rgba(93,160,255,0.6);"></div>
+    </div>
+    <div style="position:absolute; left:120px; top:360px; width:1200px; z-index:10;">
+      <div style="font-family:var(--font-sans); font-size:24px; font-weight:700; color:#5DA0FF; letter-spacing:0.3em; margin-bottom:24px;">PORTFOLIO</div>
+      <h1 class="h-hero" style="font-size:92px; line-height:1.15; margin:0; letter-spacing:-0.02em;">복잡성을 임팩트로 전환하는<br><span style="color:#5DA0FF;">Senior Tech PM</span> 김보현입니다.</h1>
+      <p class="body-kr" style="font-size:24px; color:#8A96AE; margin-top:36px; line-height:1.6; font-weight:400;">
+        하드웨어 아키텍처 수립부터 글로벌 결제 인프라, 정산 자동화 파이프라인 구축까지<br>
+        기술적 한계를 비즈니스 가치로 연결합니다.
       </p>
     </div>
-
-    <!-- 4가지 핵심 역량 카드 -->
-    <div class="pillar-grid" style="z-index: 10;">
-      <div class="card">
-        <div style="color:#5DA0FF; font-weight:700; font-size:18px; margin-bottom:8px;">Embedded HW PO</div>
-        <div style="color:#8A96AE; font-size:14px;">IoT · BMS · Controller ESC</div>
-      </div>
-      <div class="card">
-        <div style="color:#5DA0FF; font-weight:700; font-size:18px; margin-bottom:8px;">과금 · 결제 인프라</div>
-        <div style="color:#8A96AE; font-size:14px;">Billing Engine · Pre-auth / Pre-paid</div>
-      </div>
-      <div class="card">
-        <div style="color:#5DA0FF; font-weight:700; font-size:18px; margin-bottom:8px;">글로벌 확장</div>
-        <div style="color:#8A96AE; font-size:14px;">태국 법인 · 조기 EBITDA BEP</div>
-      </div>
-      <div class="card">
-        <div style="color:#5DA0FF; font-weight:700; font-size:18px; margin-bottom:8px;">데이터 기반 성장</div>
-        <div style="color:#8A96AE; font-size:14px;">투자 유치 200억 · 예측 모델링</div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ==================== SLIDE 02: TIMELINE ==================== -->
-  <section class="slide-section">
-    <div style="width: 100%; max-width: 1500px; z-index: 10;">
-      
-      <div style="display:flex; justify-content:space-between; align-items: flex-end; flex-wrap:wrap; gap:15px; width:100%;">
+    <div style="position:absolute; left:120px; top:780px; width:1680px; z-index:10; display:flex; gap:24px;">
+      <div class="card" style="flex:1; padding:24px; display:flex; align-items:center; gap:16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5DA0FF" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         <div>
-          <div class="eyebrow" style="margin-bottom:10px;"><span class="rule"></span><span>CAREER PATH</span></div>
-          <div style="display:flex; align-items:baseline; gap:20px; flex-wrap:wrap;">
-            <h2 class="h-hero" style="font-size: clamp(36px, 4vw, 56px);">Timeline Overview</h2>
-            <span style="color:#A8B4CC; font-size: clamp(20px, 2vw, 28px); font-weight:400;">2021 – 2026</span>
-          </div>
-        </div>
-        <div style="color:#8A96AE; font-size:18px; font-weight:500; margin-bottom:10px;">
-          총 경력 <span style="color:#F2F5FA; font-weight:700;">6년 1개월</span>
+          <div style="color:#F2F5FA; font-weight:700; font-size:18px;">E2E 아키텍처 총괄</div>
+          <div style="color:#8A96AE; font-size:14px; margin-top:4px;">HW × App × Server 연결</div>
         </div>
       </div>
-
-      <!-- 그라데이션 타임라인 바 -->
-      <div class="timeline-bar-container">
-        <div class="timeline-line"></div>
-      </div>
-
-      <!-- 3개 스텝 카드 구조 -->
-      <div class="timeline-grid">
-        
-        <!-- STEP 01 -->
-        <div class="card" style="border-color: rgba(59,130,246,0.25);">
-          <div style="color:#5DA0FF; font-weight:700; letter-spacing:.15em; font-size:14px; margin-bottom:12px;">STEP 01 | 2021.03 – 2022.12</div>
-          <h3 class="h-title" style="font-size:24px; margin:0 0 8px 0; line-height:1.3;">사업·프로덕트 기획<br>초기 수익 모델 설계</h3>
-          <div style="color:#8A96AE; font-size:15px; margin-bottom:20px;">지바이크 기획재정팀 · 팀원</div>
-          <div style="height:1px; background:#1F2C46; margin-bottom:20px;"></div>
-          
-          <div class="body-kr" style="font-size:15px; line-height:1.6;">
-            <div class="bullet-point"><span class="check">✓</span><div><b style="color:#F2F5FA;">전략적 가격 정책 수립</b> — 요금 3원화로 매출 개선 및 브랜드 프레임 전환</div></div>
-            <div class="bullet-point"><span class="check">✓</span><div><b style="color:#F2F5FA;">거리 요금제 도입</b> — 하이브리드 과금 로직 설계 및 A/B 검증</div></div>
-            <div class="bullet-point"><span class="check">✓</span><div><b style="color:#F2F5FA;">상품 운영 총괄</b> — 상품 리뉴얼 및 정산 데이터 체계 생성</div></div>
-          </div>
-        </div>
-
-        <!-- STEP 02 -->
-        <div class="card" style="border-color: rgba(139,123,255,0.25);">
-          <div style="color:#8B7BFF; font-weight:700; letter-spacing:.15em; font-size:14px; margin-bottom:12px;">STEP 02 | 2023.01 – 2024.12</div>
-          <h3 class="h-title" style="font-size:24px; margin:0 0 8px 0; line-height:1.3;">Tech PO<br>하드웨어 · 글로벌 결제</h3>
-          <div style="color:#8A96AE; font-size:15px; margin-bottom:20px;">지바이크 전략기획팀 · 파트장</div>
-          <div style="height:1px; background:#1F2C46; margin-bottom:20px;"></div>
-          
-          <div class="body-kr" style="font-size:15px; line-height:1.6;">
-            <div class="bullet-point"><span class="check" style="color:#8B7BFF;">✓</span><div><b style="color:#F2F5FA;">국산 PM HW 개발 총괄</b> — IoT 펌웨어·BMS·Controller ESC 도메인 학습 및 앱 연동</div></div>
-            <div class="bullet-point"><span class="check" style="color:#8B7BFF;">✓</span><div><b style="color:#F2F5FA;">글로벌 결제 인프라</b> — Pre-auth·Pre-paid 정책 및 정산 자동화 구축</div></div>
-            <div class="bullet-point"><span class="check" style="color:#8B7BFF;">✓</span><div><b style="color:#F2F5FA;">태국 법인 진출 TF</b> — 초기 안정화 및 조기 BEP 달성 기반 마련</div></div>
-          </div>
-        </div>
-
-        <!-- STEP 03 -->
-        <div class="card" style="border-color: rgba(45,212,191,0.25);">
-          <div style="color:#4CE0C4; font-weight:700; letter-spacing:.15em; font-size:14px; margin-bottom:12px;">STEP 03 | 2025.01 – 2026.02</div>
-          <h3 class="h-title" style="font-size:24px; margin:0 0 8px 0; line-height:1.3;">Senior PM<br>전사 KPI · 중장기 전략</h3>
-          <div style="color:#8A96AE; font-size:15px; margin-bottom:20px;">지바이크 전략기획팀 · 팀장</div>
-          <div style="height:1px; background:#1F2C46; margin-bottom:20px;"></div>
-          
-          <div class="body-kr" style="font-size:15px; line-height:1.6;">
-            <div class="bullet-point"><span class="check" style="color:#4CE0C4;">✓</span><div><b style="color:#F2F5FA;">데이터 기반 경영계획</b> — Raw DB 기반 매출 예측 모델 및 OKR 도입</div></div>
-            <div class="bullet-point"><span class="check" style="color:#4CE0C4;">✓</span><div><b style="color:#F2F5FA;">글로벌 결제·환율 고도화</b> — 국가별 요금 정책 및 정산 프로세스 최적화</div></div>
-            <div class="bullet-point"><span class="check" style="color:#4CE0C4;">✓</span><div><b style="color:#F2F5FA;">전략적 M&A / IR</b> — 실사(DD) 주도, 투자자 대응 및 중장기 로드맵 수립</div></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- 하단 범례(Legend) -->
-      <div style="margin-top: 50px; text-align: center; width: 100%;">
-        <div style="display:inline-flex; align-items:center; gap:24px; color:#8A96AE; font-size:13px; font-weight:600; letter-spacing:.1em; flex-wrap:wrap; justify-content:center;">
-          <span><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#3B82F6; margin-right:6px; vertical-align:middle;"></span>FOUNDATION</span>
-          <span><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#8B7BFF; margin-right:6px; vertical-align:middle;"></span>TECH PO</span>
-          <span><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#2DD4BF; margin-right:6px; vertical-align:middle;"></span>SENIOR PM</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Slide 03: Profile & Identity -->
-  <section class="opacity-0 transition-all duration-700 ease-in-out absolute inset-0 flex flex-col justify-between p-16 bg-slate-900 text-slate-100" data-slide="3">
-    <div class="flex justify-between items-start">
+      <div class="card" style="flex:1; padding:24px; display:flex; align-items:center; gap:16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5DA0FF" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
         <div>
-            <span class="text-xs font-mono tracking-widest text-emerald-400 uppercase">01 / OVERVIEW</span>
-            <h2 class="text-3xl font-light tracking-tight mt-2 text-white">Turning Complexity into Impact</h2>
+          <div style="color:#F2F5FA; font-weight:700; font-size:18px;">글로벌 확장 인프라</div>
+          <div style="color:#8A96AE; font-size:14px; margin-top:4px;">태국 법인 조기 EBITDA BEP</div>
         </div>
-        <div class="text-right">
-            <span class="text-xs font-mono text-slate-500">6Y Senior / Tech PM</span>
+      </div>
+      <div class="card" style="flex:1; padding:24px; display:flex; align-items:center; gap:16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5DA0FF" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+        <div>
+          <div style="color:#F2F5FA; font-weight:700; font-size:18px;">데이터 모델링 & IR</div>
+          <div style="color:#8A96AE; font-size:14px; margin-top:4px;">신사업 투자 유치 200억 기여</div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="grid grid-cols-12 gap-8 my-auto">
-        <div class="col-span-4 border-r border-slate-800 pr-8">
-            <h3 class="text-xl font-medium text-emerald-400 mb-4">Core Identity</h3>
-            <p class="text-slate-300 leading-relaxed text-sm">
-                하드웨어 임베디드 통신부터 글로벌 결제 인프라까지, 비즈니스의 거시적 목표를 정밀한 기술 언어로 번역하고 복잡한 기술 제약을 명쾌한 비즈니스 가치로 연결합니다.
-            </p>
-        </div>
-        <div class="col-span-8 grid grid-cols-2 gap-6 pl-4">
-            <div class="p-5 rounded-xl bg-slate-800/40 border border-slate-800/60">
-                <div class="text-xs font-mono text-emerald-400 mb-2">01. Tech-Savvy Leadership</div>
-                <p class="text-slate-400 text-xs leading-relaxed">IoT 펌웨어, BMS, Controller ESC 등 Low-level 기술 구조 조율 및 마이그레이션 아키텍처 수립</p>
-            </div>
-            <div class="p-5 rounded-xl bg-slate-800/40 border border-slate-800/60">
-                <div class="text-xs font-mono text-emerald-400 mb-2">02. Global Scalability</div>
-                <p class="text-slate-400 text-xs leading-relaxed">다국적 PG 연동, 선결제/가승인 구조 설계 및 국가별 환율/요금 정책 내재화로 글로벌 확장 견인</p>
-            </div>
-            <div class="p-5 rounded-xl bg-slate-800/40 border border-slate-800/60">
-                <div class="text-xs font-mono text-emerald-400 mb-2">03. Data & Billing</div>
-                <p class="text-slate-400 text-xs leading-relaxed">GPS 기반 복합 과금 로직 설계 및 Raw DB 파싱 기반의 완전 자동화 정산 파이프라인 구축</p>
-            </div>
-            <div class="p-5 rounded-xl bg-slate-800/40 border border-slate-800/60">
-                <div class="text-xs font-mono text-emerald-400 mb-2">04. Business Impact</div>
-                <p class="text-slate-400 text-xs leading-relaxed">200억 규모 투자 유치 서포트, 태국 법인 조기 EBITDA BEP 달성 및 24억 규모 R&D 자금 수수 기여</p>
-            </div>
-        </div>
+  <div class="slide-container" data-screen-label="02 Timeline">
+    <div style="position:absolute; left:120px; top:88px; width:600px; z-index:10;">
+      <div class="eyebrow"><span class="rule"></span><span>CAREER PATH</span></div>
     </div>
+    <div style="position:absolute; left:120px; top:132px; width:1400px; z-index:10;">
+      <div style="display:flex;align-items:baseline;gap:22px;">
+        <span class="h-hero" style="font-size:78px;font-weight:900;line-height:1.15;">Timeline Overview</span>
+        <span style="color:#A8B4CC;font-family:var(--font-sans);font-weight:400;font-size:40px;letter-spacing:-0.02em;">Strategic Planning to Tech Leadership</span>
+      </div>
+    </div>
+    <div style="position:absolute; left:120px; top:360px; width:1680px; display:flex; flex-direction:column; gap:40px;">
+      <div style="position:relative; height:4px; background:#1F2C46; margin:40px 0;">
+        <div style="position:absolute; left:0; top:-8px; width:20px; height:20px; border-radius:50%; background:#3B82F6; box-shadow:0 0 12px #3B82F6;"></div>
+        <div style="position:absolute; left:33%; top:-8px; width:20px; height:20px; border-radius:50%; background:#8B7BFF; box-shadow:0 0 12px #8B7BFF;"></div>
+        <div style="position:absolute; left:66%; top:-8px; width:20px; height:20px; border-radius:50%; background:#4CE0C4; box-shadow:0 0 12px #4CE0C4;"></div>
+      </div>
+      <div style="display:flex; gap:60px;">
+        <div class="card" style="flex:1; padding:32px;">
+          <div style="color:#3B82F6; font-family:var(--font-sans); font-weight:800; font-size:18px;">PHASE 01. Strategic Management</div>
+          <h3 class="h-title" style="font-size:26px; margin:16px 0 8px 0;">경영전략 및 M&A 실사 총괄</h3>
+          <p class="body-kr" style="font-size:16px; line-height:1.6; margin:0;">중장기 사업 로드맵 수립 및 하드웨어 제조사 대상 M&A 실사(Due Diligence) 프로세스를 주도하며 비즈니스 구조를 확립했습니다.</p>
+        </div>
+        <div class="card" style="flex:1; padding:32px;">
+          <div style="color:#8B7BFF; font-family:var(--font-sans); font-weight:800; font-size:18px;">PHASE 02. Tech PO / Team Leader</div>
+          <h3 class="h-title" style="font-size:26px; margin:16px 0 8px 0;">하드웨어 및 E2E 제품 고도화</h3>
+          <p class="body-kr" style="font-size:16px; line-height:1.6; margin:0;">개발 조직을 리드하며 단말 프로토콜 마이그레이션(UART→CAN) 및 서버 정합성 검증 엔진 설계를 총괄하여 인프라 안전성을 극대화했습니다.</p>
+        </div>
+        <div class="card" style="flex:1; padding:32px;">
+          <div style="color:#4CE0C4; font-family:var(--font-sans); font-weight:800; font-size:18px;">PHASE 03. Global Scaling & Data Impact</div>
+          <h3 class="h-title" style="font-size:26px; margin:16px 0 8px 0;">글로벌 결제/정산 자동화 & IR</h3>
+          <p class="body-kr" style="font-size:16px; line-height:1.6; margin:0;">태국 등 글로벌 진출용 복합 결제 및 정산 데이터 파이프라인을 구축하고, 계량 모델링 기반 비즈니스 시뮬레이션으로 200억 투자 유치를 지원했습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <div class="flex justify-between items-center text-xs text-slate-500 border-t border-slate-800 pt-6 font-mono">
-        <div>KIM BO HYEON &copy; PORTFOLIO</div>
-        <div>STRATEGIC TECH PRODUCT MANAGER</div>
+  <div class="slide-container" data-screen-label="03 Profile Summary">
+    <div style="position:absolute; left:120px; top:88px; width:600px; z-index:10;">
+      <div class="eyebrow"><span class="rule"></span><span>PROFILE SUMMARY</span></div>
     </div>
- </section>
+    <div style="position:absolute; left:120px; top:132px; width:1350px; z-index:10;">
+      <div class="h-hero" style="font-size:76px;font-weight:900;line-height:1.15;">사업과 개발을 <span style="color:#5DA0FF;">연결</span>하는<br>시니어 PM</div>
+    </div>
+    <div style="position:absolute; left:120px; top:400px; width:520px; height:480px; z-index:5;">
+      <div class="card" style="width:100%; height:100%; padding:40px; box-sizing:border-box;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="width:48px; height:48px; border-radius:10px; background:rgba(93,160,255,0.14); display:flex; align-items:center; justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#5DA0FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="color:#5DA0FF; font-family:var(--font-sans); font-weight:700; letter-spacing:.18em; font-size:16px;">PILLAR 01</div>
+        </div>
+        <div class="h-title" style="font-size:32px; margin-top:24px; line-height:1.3;">하드웨어 E2E 아키텍처</div>
+        <div style="color:#8A96AE; font-family:var(--font-kr); font-size:18px; margin-top:10px;">Hardware × App × Server</div>
+        <div style="height:1px; background:#1F2C46; margin:24px 0;"></div>
+        <p class="body-kr" style="margin:0; font-size:19px; line-height:1.65;">
+          마이크로 모빌리티 하드웨어와 전용 App, 서버 생태계의 <b style="color:#F2F5FA;">E2E 시스템 아키텍처</b>를 총괄하며, 통신 프로토콜 고도화 및 데이터 정합성을 확보했습니다.
+        </p>
+      </div>
+    </div>
+    <div style="position:absolute; left:680px; top:400px; width:520px; height:480px; z-index:5;">
+      <div class="card" style="width:100%; height:100%; padding:40px; box-sizing:border-box;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="width:48px; height:48px; border-radius:10px; background:rgba(139,123,255,0.14); display:flex; align-items:center; justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#B5A8FF" stroke-width="1.8"/><path d="M12 6v6l4 2" stroke="#B5A8FF" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div style="color:#B5A8FF; font-family:var(--font-sans); font-weight:700; letter-spacing:.18em; font-size:16px;">PILLAR 02</div>
+        </div>
+        <div class="h-title" style="font-size:32px; margin-top:24px; line-height:1.3;">글로벌 인프라 및 자동화</div>
+        <div style="color:#8A96AE; font-family:var(--font-kr); font-size:18px; margin-top:10px;">Scalability × Efficiency</div>
+        <div style="height:1px; background:#1F2C46; margin:24px 0;"></div>
+        <p class="body-kr" style="margin:0; font-size:19px; line-height:1.65;">
+          글로벌 복합 결제 엔진과 리포팅/정산 자동화 파이프라인을 구축하여 <b style="color:#F2F5FA;">운영 비용을 효율화</b>하고, 신규 국가 확장을 위한 기술적 발판을 마련했습니다.
+        </p>
+      </div>
+    </div>
+    <div style="position:absolute; left:1240px; top:400px; width:520px; height:480px; z-index:5;">
+      <div class="card" style="width:100%; height:100%; padding:40px; box-sizing:border-box;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="width:48px; height:48px; border-radius:10px; background:rgba(76,224,196,0.14); display:flex; align-items:center; justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="#4CE0C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div style="color:#4CE0C4; font-family:var(--font-sans); font-weight:700; letter-spacing:.18em; font-size:16px;">PILLAR 03</div>
+        </div>
+        <div class="h-title" style="font-size:32px; margin-top:24px; line-height:1.3;">데이터 기반 플랫폼 성장</div>
+        <div style="color:#8A96AE; font-family:var(--font-kr); font-size:18px; margin-top:10px;">Analytics × Business Impact</div>
+        <div style="height:1px; background:#1F2C46; margin:24px 0;"></div>
+        <p class="body-kr" style="margin:0; font-size:19px; line-height:1.65;">
+          Raw DB 분석과 <b style="color:#F2F5FA;">예측 모델링</b>으로 신사업 <b style="color:#F2F5FA;">투자 유치 200억</b>, 태국 법인 <b style="color:#F2F5FA;">조기 EBITDA BEP</b> 달성에 기여했습니다.
+        </p>
+      </div>
+    </div>
+    <div style="position:absolute; left:120px; top:960px; width:1680px; z-index:10;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #1F2C46; padding-top:20px; color:#475569; font-family:var(--font-sans); font-size:13px; font-weight:600; letter-spacing:.1em;">
+        <span>KIM BO HYEON — PORTFOLIO</span>
+        <span>© 2026 ALL RIGHTS RESERVED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="04 HW E2E Architecture">
+    <div style="position:absolute; left:120px; top:84px; width:900px; z-index:10;">
+      <div class="project-badge"><span class="chip">PROJECT 01</span><span class="cat">HARDWARE DEVELOPMENT PO</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:140px; width:1300px; z-index:10;">
+      <div class="h-hero" style="font-size:68px;font-weight:900;line-height:1.1;">하드웨어 – 앱 – 서버 <span style="color:#5DA0FF;">E2E 아키텍처</span> 총괄</div>
+    </div>
+    <div style="position:absolute; left:1440px; top:150px; width:360px; z-index:10; text-align:right;">
+      <div class="body-kr" style="font-size:22px;color:#C9D2E3;">Role: <b style="color:#F2F5FA;">Technical PO / Lead</b></div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1100px; display:flex; flex-direction:column; gap:32px;">
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">Background & Context</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          단말기 제어 로직과 서버 백엔드 간의 데이터 동기화 지연 및 누락으로 인한 서비스 운영 리스크 발생. IoT 펌웨어 제어단부터 사용자 클라이언트 애플리케이션, 코어 백엔드 시스템에 이르는 전 과정의 명세 표준화 및 데이터 무결성 검증 아키텍처가 절실했던 상황이었습니다.
+        </p>
+      </div>
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">Key Deliverables & Execution</h3>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; gap:12px;"><span class="check">✓</span><span class="body-kr" style="font-size:18px;"><b style="color:#F2F5FA;">E2E 인터페이스 계약(API & Payload Contract) 구조화</b>: 무선 통신 환경에서의 유실률을 방어하기 위한 통신 시퀀스 전면 재설계</span></div>
+          <div style="display:flex; gap:12px;"><span class="check">✓</span><span class="body-kr" style="font-size:18px;"><b style="color:#F2F5FA;">정합성 검증 파이프라인 연동</b>: 단말 상태 트래킹 로그와 데이터베이스 트랜잭션을 연동해 상호 불일치율을 기존 대비 90% 이상 차단</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute; left:1260px; top:320px; width:540px; display:flex; flex-direction:column; gap:20px;">
+      <div class="metric">
+        <div class="metric-label">투자/R&D 자금 연계 확보</div>
+        <div class="metric-value">224<span style="font-size:24px; color:#C9D2E3; font-weight:600; margin-left:4px;">억 원</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">E2E 데이터 정합성 지표</div>
+        <div class="metric-value" style="color:#4CE0C4;">Aligned</div>
+        <div style="color:#8A96AE; font-size:14px; margin-top:4px;">HW-App-Server 계약 완전 표준화 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="05 UART to CAN">
+    <div style="position:absolute; left:120px; top:84px; width:900px; z-index:10;">
+      <div class="project-badge"><span class="chip" style="background:#8B7BFF;">PROJECT 02</span><span class="cat" style="color:#B5A8FF;">COMMUNICATION PROTOCOL</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:140px; width:1300px; z-index:10;">
+      <div class="h-hero" style="font-size:66px;font-weight:900;line-height:1.1;">차세대 통신 프로토콜 전환 <span style="color:#B5A8FF;">UART → CAN</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1100px; display:flex; flex-direction:column; gap:32px;">
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#B5A8FF;">추진 목적 및 기술적 당위성</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          기존 1:1 통신 방식인 UART 프로토콜은 배터리, 모터 컨트롤러, 블랙박스 등 차량 내 멀티 노드 증가 시 노이즈 취약 및 배선 한계 직면. 버스 구조의 차동 신호 방식을 채택하는 **CAN(Controller Area Network) 통신 시스템**으로 전면 전환하여 하드웨어 제어 안정성 확보와 고장 진단 모듈(OBD) 확장 토대를 마련했습니다.
+        </p>
+      </div>
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#B5A8FF;">수행 성과</h3>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; gap:12px;"><span class="check" style="color:#B5A8FF;">✓</span><span class="body-kr" style="font-size:18px;">전체 단말 패킷 에러율(CRC Error) <b style="color:#F2F5FA;">0.02% 미만</b>으로 절감</span></div>
+          <div style="display:flex; gap:12px;"><span class="check" style="color:#B5A8FF;">✓</span><span class="body-kr" style="font-size:18px;">실시간 배터리 셀(Cell) 상태 수집 주기 단축 및 예측 기반 BMS 관리 기능 구현</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute; left:1260px; top:320px; width:540px; display:flex; flex-direction:column; gap:20px;">
+      <div class="card" style="padding:40px; text-align:center;">
+        <div style="display:flex; justify-content:center; gap:20px; align-items:center;">
+          <div style="padding:16px; border:1px solid #2A3B5E; border-radius:12px; width:120px;">
+            <div style="color:#8A96AE; font-size:12px;">BEFORE</div>
+            <div style="color:#FFF; font-size:24px; font-weight:800; margin-top:4px;">UART</div>
+          </div>
+          <div style="color:#B5A8FF; font-size:28px;">→</div>
+          <div style="padding:16px; border:1px solid #B5A8FF; background:rgba(139,123,255,0.1); border-radius:12px; width:120px;">
+            <div style="color:#B5A8FF; font-size:12px;">AFTER</div>
+            <div style="color:#FFF; font-size:24px; font-weight:800; margin-top:4px;">CAN</div>
+          </div>
+        </div>
+        <div style="color:#8A96AE; font-size:15px; margin-top:24px; text-align:left; line-height:1.5;">
+          버스 아키텍처 도입을 통해 단말기 내부 배선 복잡도를 줄이고 멀티 센서 데이터 병렬 트래킹 최적화 완료.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="06 Hybrid Billing Engine">
+    <div style="position:absolute; left:120px; top:84px; width:900px; z-index:10;">
+      <div class="project-badge"><span class="chip">PROJECT 03</span><span class="cat">BILLING ENGINE LOGIC</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:140px; width:1300px; z-index:10;">
+      <div class="h-hero" style="font-size:68px;font-weight:900;line-height:1.1;">GPS 기반 <span style="color:#5DA0FF;">하이브리드 과금 엔진</span> 로직 설계</div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1100px; display:flex; flex-direction:column; gap:32px;">
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">해결하고자 지향한 목표</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          도심지 음영 지역(빌딩 숲 등)에서 GPS 튀는 현상으로 인해 오과금이 발생하거나 사용자 반발 클레임이 다수 접수되는 문제 직면. 단말의 가속도 센서 지표와 통신 기지국 기반 위치값(LBS), 라우트 스냅 알고리즘을 융합한 보정 체계를 구축해 과금 오류율을 근본적으로 극복했습니다.
+        </p>
+      </div>
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">상세 아키텍처 내용</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          주행 거리에 따른 실시간 변동 스케줄러와 지역별 반경 펜스(Geofencing) 조건 연동 연산을 효율화하여 백엔드 코어 인프라 서버 부하를 30% 이상 절감시키는 효과를 도출했습니다.
+        </p>
+      </div>
+    </div>
+    <div style="position:absolute; left:1260px; top:320px; width:540px; display:flex; flex-direction:column; gap:20px;">
+      <div class="metric">
+        <div class="metric-label">과금 오차 및 오류율</div>
+        <div class="metric-value" style="color:#4CE0C4;">0.3%<span style="font-size:20px; color:#C9D2E3;"> 미만</span></div>
+      </div>
+      <div class="metric" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="metric-label">전체 탑승 비중 (SHARE)</div>
+          <div class="metric-value">35%</div>
+        </div>
+        <svg width="80" height="80" viewBox="0 0 36 36">
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#1F2C46" stroke-width="3"/>
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#4CE0C4" stroke-width="3" stroke-dasharray="35, 100" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="07 Global Payment Infra">
+    <div style="position:absolute; left:120px; top:84px; width:900px; z-index:10;">
+      <div class="project-badge"><span class="chip">PROJECT 04</span><span class="cat">GLOBAL PAYMENT INFRA</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:140px; width:1300px; z-index:10;">
+      <div class="h-hero" style="font-size:64px;font-weight:900;line-height:1.1;">글로벌 복합 결제 아키텍처 <span style="color:#5DA0FF;">Pre-auth · Pre-paid</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1100px; display:flex; flex-direction:column; gap:32px;">
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">글로벌 인프라 확장 미션</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          태국 등 동남아시아 시장 진출 시 국내와 다른 신용카드 승인 환경 및 미승인/잔액 부족 리스크 처리 필요. 가인증 후 최종 실 결제를 처리하는 **Pre-authorization(가승인 후 후불)** 메커니즘과 현지 모바일 월렛 연동형 **Pre-paid(선불 충전)** 다중 트랙 엔진을 설계했습니다.
+        </p>
+      </div>
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">비즈니스 성과</h3>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; gap:12px;"><span class="check">✓</span><span class="body-kr" style="font-size:18px;"><b style="color:#F2F5FA;">수익성 최적화</b>: 국가별 맞춤형 환율 매핑 및 수수료 최적화 로직으로 환차손 방어</span></div>
+          <div style="display:flex; gap:12px;"><span class="check">✓</span><span class="body-kr" style="font-size:18px;"><b style="color:#F2F5FA;">미수금 제로화</b>: 서비스 악성 미수 채권 발생 비율을 0.05% 수준으로 통제</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute; left:1260px; top:320px; width:540px; display:flex; flex-direction:column; gap:20px;">
+      <div class="metric">
+        <div class="metric-label">결제 시스템 안정성 지표</div>
+        <div class="metric-value" style="color:#5DA0FF;">Stable</div>
+        <div style="color:#8A96AE; font-size:15px; margin-top:6px;">Multi-country PG 연동 완벽 안착</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="08 Settlement Automation">
+    <div style="position:absolute; left:120px; top:84px; width:900px; z-index:10;">
+      <div class="project-badge"><span class="chip">PROJECT 05</span><span class="cat">SETTLEMENT AUTOMATION</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:140px; width:1300px; z-index:10;">
+      <div class="h-hero" style="font-size:64px;font-weight:900;line-height:1.1;">정산 자동화 <span style="color:#5DA0FF;">DB-to-Settlement</span> 파이프라인</div>
+    </div>
+    <div style="position:absolute; left:1440px; top:150px; width:360px; z-index:10; text-align:right;">
+      <div class="body-kr" style="font-size:22px;color:#C9D2E3;">Role: <b style="color:#F2F5FA;">Lead Architect & PM</b></div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1100px; display:flex; flex-direction:column; gap:32px;">
+      <div class="card" style="padding:40px;">
+        <h3 class="h-title" style="font-size:28px; margin:0 0 16px 0; color:#5DA0FF;">비즈니스 자동화 성과 및 가치</h3>
+        <p class="body-kr" style="font-size:18px; line-height:1.65; margin:0;">
+          매달 수동 엑셀 수작업으로 마감하던 글로벌 정산/파트너 파이프라인을 완전히 청산하고, 트랜잭션 DB 마스터 레코드를 직결 파싱하는 검증 파이프라인을 구축했습니다. 휴먼 에러 발생율을 제로(0%)로 수렴시키고 마감 리드타임을 수일 단위에서 실시간 배치 단위로 가속했습니다.
+        </p>
+      </div>
+      <div class="card" style="padding:40px; background:rgba(9, 15, 28, 0.5);">
+        <div style="display:flex; gap:20px; align-items:center;">
+          <div style="flex:1; padding:16px; border:1px solid #2A3B5E; border-radius:10px; text-align:center;">
+            <div style="color:#8A96AE; font-size:12px; font-weight:700;">RAW DB TRACE</div>
+            <div style="color:#FFF; font-size:16px; font-weight:800; margin-top:4px;">Extract</div>
+          </div>
+          <div style="color:#5DA0FF;">→</div>
+          <div style="flex:1; padding:16px; border:1px solid #2A3B5E; border-radius:10px; text-align:center;">
+            <div style="color:#8A96AE; font-size:12px; font-weight:700;">PARSE MATCH</div>
+            <div style="color:#FFF; font-size:16px; font-weight:800; margin-top:4px;">Map</div>
+          </div>
+          <div style="color:#5DA0FF;">→</div>
+          <div style="flex:1; padding:16px; border:1px solid #5DA0FF; background:rgba(59,130,246,0.1); border-radius:10px; text-align:center;">
+            <div style="color:#5DA0FF; font-size:12px; font-weight:700;">SETTLE COMPLETE</div>
+            <div style="color:#FFF; font-size:16px; font-weight:800; margin-top:4px;">Rule</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute; left:1260px; top:320px; width:540px; display:flex; flex-direction:column; gap:20px;">
+      <div class="metric">
+        <div class="metric-label">정산 마감 리드타임 감축</div>
+        <div class="metric-value">Real-time<span style="font-size:20px; color:#C9D2E3;"> Batch</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="09 PM Role Definition">
+    <div style="position:absolute; left:120px; top:88px; width:600px; z-index:10;">
+      <div class="eyebrow"><span class="rule"></span><span>PM ROLE DEFINITION</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:132px; width:1680px; z-index:10;">
+      <div class="h-hero" style="font-size:68px;font-weight:900;line-height:1.15;">사업 · 이사진 · 개발을 <span style="color:#5DA0FF;">실행 가능한 언어</span>로 연결</div>
+    </div>
+    <div style="position:absolute; left:120px; top:326px; width:1680px; z-index:10;">
+      <p class="body-kr" style="margin:0;font-size:24px;line-height:1.65;color:#C9D2E3;font-weight:400;">
+        시니어 테크 PM의 본질은 모호한 요구사항 속에서 비즈니스 우선순위를 수치화하고,<br>
+        엔지니어링 제약사항을 극복하는 구현 스펙을 뽑아내 스케줄 내에 실현하는 것입니다.
+      </p>
+    </div>
+    <div style="position:absolute; left:120px; top:520px; width:1680px; display:flex; gap:40px;">
+      <div class="card" style="flex:1; padding:40px;">
+        <h4 class="h-title" style="font-size:24px; color:#5DA0FF; margin:0 0 20px 0;">비즈니스 / 전략 방향 (Business Side)</h4>
+        <div style="display:flex; flex-direction:column; gap:12px; color:#C9D2E3; font-size:18px;">
+          <div>• 연간 영업이익률 타겟 및 자본 비용 효율화</div>
+          <div>• 글로벌 신규 마켓(태국 등) 거점 런칭 지연 방지</div>
+          <div>• 주주단 및 투자 협상 가치 입증 데이터셋 도출</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:#5DA0FF; font-size:32px; font-weight:bold;">⇄</div>
+      <div class="card" style="flex:1; padding:40px;">
+        <h4 class="h-title" style="font-size:24px; color:#4CE0C4; margin:0 0 20px 0;">기술적 제약과 해결 (Engineering Side)</h4>
+        <div style="display:flex; flex-direction:column; gap:12px; color:#C9D2E3; font-size:18px;">
+          <div>• 무선 통신 레이턴시 및 패킷 무결성 방어</div>
+          <div>• 레거시 데이터 이관 및 트랜잭션 ACID 확보</div>
+          <div>• 인프라 오토스케일링 및 시스템 부하 통제</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="10 Core Competencies">
+    <div style="position:absolute; left:120px; top:88px; width:600px; z-index:10;">
+      <div class="eyebrow"><span class="rule"></span><span>CORE COMPETENCIES</span></div>
+    </div>
+    <div style="position:absolute; left:120px; top:130px; width:900px; z-index:10;">
+      <div class="h-hero" style="font-size:82px;font-weight:900;line-height:1.05;">핵심 역량 요약</div>
+    </div>
+    <div style="position:absolute; left:1150px; top:172px; width:650px; z-index:10; text-align:right;">
+      <div style="color:#8A96AE;font-family:var(--font-sans);font-size:26px;font-weight:400;">Why I'm the Right <b style="color:#F2F5FA;">Senior · Tech PM</b></div>
+    </div>
+    <div style="position:absolute; left:120px; top:360px; width:1680px; display:flex; flex-direction:column; gap:24px;">
+      <div class="card" style="padding:32px; display:flex; gap:24px; align-items:flex-start;">
+        <div style="background:rgba(93,160,255,0.15); color:#5DA0FF; font-weight:800; font-size:20px; padding:12px 20px; border-radius:10px; min-width:80px; text-align:center;">01</div>
+        <div>
+          <h4 class="h-title" style="font-size:24px; margin:0 0 8px 0;">풀스택 도메인 아키텍처 이해도</h4>
+          <p class="body-kr" style="font-size:18px; margin:0; line-height:1.6;">하드웨어 인터페이스 단부터 백엔드 데이터 웨어하우스까지 전체 시스템 생태계를 조망하여 개발 공수를 최소화하는 설계 능력을 보유하고 있습니다.</p>
+        </div>
+      </div>
+      <div class="card" style="padding:32px; display:flex; gap:24px; align-items:flex-start;">
+        <div style="background:rgba(139,123,255,0.15); color:#B5A8FF; font-weight:800; font-size:20px; padding:12px 20px; border-radius:10px; min-width:80px; text-align:center;">02</div>
+        <div>
+          <h4 class="h-title" style="font-size:24px; margin:0 0 8px 0;">계량 데이터 기반 의사결정 체계화</h4>
+          <p class="body-kr" style="font-size:18px; margin:0; line-height:1.6;">감이나 주관이 아닌 실시간 원천 Raw 데이터 추출과 고급 통계/시뮬레이션 모델링 기법을 적용하여 이사진과 주주가 납득할 수밖에 없는 핵심 지표 위주의 로드맵을 구축합니다.</p>
+        </div>
+      </div>
+      <div class="card" style="padding:32px; display:flex; gap:24px; align-items:flex-start;">
+        <div style="background:rgba(76,224,196,0.15); color:#4CE0C4; font-weight:800; font-size:20px; padding:12px 20px; border-radius:10px; min-width:80px; text-align:center;">03</div>
+        <div>
+          <h4 class="h-title" style="font-size:24px; margin:0 0 8px 0;">애자일 팀 빌딩 및 성과 지향적 리더십</h4>
+          <p class="body-kr" style="font-size:18px; margin:0; line-height:1.6;">엔지니어들과의 밀도 높은 1:1 싱크 및 피어 리뷰 체계를 구현하여 제품 품질과 출시 타임라인을 엄수하는 강력한 고성능 조직 문화를 리드해왔습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-container" data-screen-label="11 Closing">
+    <div style="position:absolute; left:1300px; top:-120px; width:900px; height:900px; z-index:1; opacity:0.6;">
+      <div style="width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(59,130,246,0.18), rgba(59,130,246,0) 55%); filter:blur(2px);"></div>
+    </div>
+    <div style="position:absolute; left:760px; top:240px; width:400px; z-index:10; text-align:center;">
+      <div style="color:#5DA0FF; font-family:var(--font-sans); font-weight:700; letter-spacing:.24em; font-size:20px;">READY TO IMPACT</div>
+    </div>
+    <div style="position:absolute; left:120px; top:320px; width:1680px; z-index:10; text-align:center;">
+      <h2 class="h-hero" style="font-size:72px; font-weight:900; line-height:1.2; margin:0;">복잡한 비즈니스 요건을<br>가장 명확한 제품의 언어로 해결하겠습니다.</h2>
+      <p class="body-kr" style="font-size:22px; color:#8A96AE; margin-top:40px; font-weight:400;">감사합니다. 김보현 드림</p>
+    </div>
+    <div style="position:absolute; left:120px; top:760px; width:1680px; display:flex; justify-content:center; gap:80px; z-index:10;">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="width:44px; height:44px; border-radius:50%; background:rgba(59,130,246,0.15); display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5DA0FF" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+        </div>
+        <div>
+          <div style="color:#8A96AE; font-size:12px; font-weight:600;">EMAIL</div>
+          <div style="color:#F2F5FA; font-size:20px; font-weight:700; margin-top:2px;">lip2334@gmail.com</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="width:44px; height:44px; border-radius:50%; background:rgba(76,224,196,0.15); display:flex; align-items:center; justify-content:center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4CE0C4" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/></svg>
+        </div>
+        <div>
+          <div style="color:#8A96AE; font-size:12px; font-weight:600;">LINKEDIN</div>
+          <div style="color:#F2F5FA; font-size:20px; font-weight:700; margin-top:2px;">linkedin.com/in/bohyeon-kim</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
 </body>
 </html>
